@@ -42,33 +42,99 @@ def create_book_file():
         print(f"unexpected error: {err}")
     
 def add_book():
-    file_name = input("Enter file name to add book: ")  
-    
-    # check file if not found
-    if not file_name:
-        print("Sorry! file name cannot be empty")
-        return
-    
-    path = Path(file_name)
-    
-    # If file name does not exist
-    if not path.exists():
-        print(f"Sorry! {path} file does not exist")
-        return
-    
-    # if file name exist user allow to add book information:
-    if path.exists():
+    try:
+        file_name = input("Enter file name to add book: ")  
+        
+        # check file if not found
+        if not file_name:
+            print("Sorry! file name cannot be empty")
+            return
+        
+        path = Path(file_name)
         
         # Check extension of file if user not enter extension it allow to make .txt autometically
         if path.suffix == "":
-            path = path.with_suffix(".txt")
-            
-            book_id = input("Enter book ID: ").strip()
-            book_title = input("Enter book title: ").strip()
-            book_author = input("Enter Author name: ").strip()
-            book_category = input("Enter book category: ").strip()
-            book_price = int(input("Enter book price: ").strip())
+                    path = path.with_suffix(".txt")
+                    
+                    
+        # If file name does not exist
+        if not path.exists():
+            print(f"Sorry! {path} file does not exist")
+            return
+        
+        
+        # Check whether path is actually a file
+        if not path.is_file():
+            print(f"Error! {path} is not a valid file")
+            return
+        
+        
+        # Get book information     
+        book_id = input("Enter book ID: ").strip()
+        if not book_id:
+            print("Error! book Id cannot be empty.")
+            return
+        
+        #check duplicate ID in book list file:
+        with open(path, 'r') as file:
+            for line in file:
+                info = line.strip().split(',')
+                if info[0].strip() == book_id.strip():
+                    print(f"Error! Book ID '{book_id}' already exist.")
+                    return
+                
+        book_title = input("Enter book title: ").strip()
+        if not book_title:
+            print("Error! Book title cannot be empty.")
+            return
+        
+        book_author = input("Enter Author name: ").strip()
+        if not book_author:
+            print("Error! Book title cannot be empty.")
+            return
+        
+        book_category = input("Enter book category: ").strip()
+        if not book_category:
+            print("Error! Book title cannot be empty.")
+            return
+        
+        #Validate price:
+        try:
+            book_price = float(input("Enter book price: ").strip())
+            if book_price<0:
+                print("Error! Book price cannot be negative")
+                return
+        except ValueError:
+            print("Error! Enter valid number for price")
+        
+        # Valid quantity
+        try:    
             book_quantity = int(input("Enter book quantity: ").strip())
+            if book_quantity<0:
+                print("Error! Book quantity cannot be negatinve")
+                return
+        except ValueError:
+            print("Error! Please enter valid quantity")
+        
+                
+        book_item = (
+            f"{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}"
+            )
+                
+        with open(path, 'w') as file:
+            file.write(book_item)
+        print(f"Book '{book_title}' added successfully")
+    except PermissionError:
+        print("Error! you do not have permission to add book list")
+        
+    except OSError as err:
+        print(f"File system error: {err}")
+        
+    except Exception as err:
+        print(f"Unexpected error: {err}")
+
+
+        
             
             
         
