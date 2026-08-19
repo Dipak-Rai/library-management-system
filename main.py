@@ -121,7 +121,7 @@ def add_book():
             f"{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}"
             )
                 
-        with open(path, 'w') as file:
+        with open(path, 'a') as file:
             file.write(book_item)
         print(f"Book '{book_title}' added successfully")
     except PermissionError:
@@ -267,138 +267,238 @@ def search_book():
         print(f"Sorry! File system error: {err}")
 
 def update_book():
-    file_name = input("Enter file name for update: ").strip()
-    
-    # If file name is empty:
-    if not file_name:
-        print("Error! File name should not be empty.")
-        return
-    
-    path = Path(file_name)
-    
-    # User can enter without use extension
-    if path.suffix==(""):
-        path = path.with_suffix(".txt")
+    try:
+        file_name = input("Enter file name for update: ").strip()
         
-    
-    # If path not exist:
-    if not path.exists():
-        print("Error! Such file has not exist.")
-        return
-    
-    # If path file is not exist
-    if not path.is_file():
-        print("Error! file name is not a file ")
-        return
-    
-    # If path Exist
-    found = False
-    if path.exists():
-        book_id = input("Enter book id for update: ").strip()
-        
-        # if ID is empty
-        if not book_id:
-            print("Error! ID should not be empty.")
+        # If file name is empty:
+        if not file_name:
+            print("Error! File name should not be empty.")
             return
         
+        path = Path(file_name)
+        
+        # User can enter without use extension
+        if path.suffix==(""):
+            path = path.with_suffix(".txt")
+            
+        
+        # If path not exist:
+        if not path.exists():
+            print("Error! Such file has not exist.")
+            return
+        
+        # If path file is not exist
+        if not path.is_file():
+            print("Error! file name is not a file ")
+            return
+        
+        # If path Exist
+        found = False
+        if path.exists():
+            book_id = input("Enter book id for update: ").strip()
+            
+            # if ID is empty
+            if not book_id:
+                print("Error! ID should not be empty.")
+                return
+            
+            with open(path, 'r') as file:
+                book_items = file.readlines()
+                for index, line in enumerate(book_items):
+                    book_item = line.strip().split(',')
+                    
+                    #Skip empty line
+                    if not book_item:
+                        continue
+                    
+                    #validate book record
+                    if len(book_item)<6:
+                        print("Warning! invalid book record found")
+                        continue
+                    
+                    #check book id
+                    if book_item[0].strip()==book_id.strip():
+                        found = True
+                        print("\n=============================")
+                        print(f"{book_item[1]} Book List")
+                        print("\n=============================")
+                        print(
+                            f"Book ID       : {book_item[0]}\n"
+                            f"Title         : {book_item[1]}\n"
+                            f"Author        : {book_item[2]}\n"
+                            f"Category      : {book_item[3]}\n"
+                            f"Price         : Rs.{book_item[4]}\n"
+                            f"Quantity      : {book_item[5]}"
+                        )
+                        
+                        print("\n================================")
+                        print("Update book ")
+                        print("Enter new information")
+                        print("================================")
+                        
+                        # if check input are empty
+                        book_title = input("Update book title: ").strip()
+                        if not book_title:
+                            print("Error! Book tile should not be empty")
+                            return
+                        
+                        book_author = input("Update book author name: ").strip()
+                        if not book_author:
+                            print("Error! Book author name should not be empty")
+                            return
+                        
+                        book_category = input("Update book category: ").strip()
+                        if not book_category:
+                            print("Error! Book category should not be empty")
+                            return
+                        
+                        # valid price 
+                        try:
+                            book_price = float(input("Update book price: ").strip())
+                            if book_price<0:
+                                print("Error! price is not a negative number.")
+                                return
+                        except ValueError:
+                            print("Error! enter a valid number.")
+                        
+                        # Quantity validation
+                        try:
+                            book_quantity = int(input("Update book quentity: ").strip())
+                            if book_quantity<0:
+                                print("Error! quantity is not a negative number.")
+                                return
+                        except ValueError:
+                            print("Error! enter a valid number")
+                        
+                        book_items[index] = (
+                            f"{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}"
+                        )
+                        break
+        if found:
+            with open(path, 'w') as file:
+                file.writelines(book_items)
+            print(f"\n Book Id '{book_item[1]}' book updated successfully")
+            
+        else:
+            print("Error! such book id does not exist.")
+    except PermissionError:
+        print("\n Error! you have not permission to update book list")
+    except OSError as err:
+        print(f"Error! File system error: {err}")
+
+
+def delete_book():
+    try:
+        file_name = input("Enter file name for delete: ")
+        
+        #check empty file
+        
+        if not file_name:
+            print("\n Error! file name should not be empty.")
+            return
+        
+        path = Path(file_name)
+        
+        # check user can allow to enter file name without extension (.txt)
+        if path.suffix=="":
+            path = path.with_suffix(".txt")
+        
+        # check path file is not found
+        if not path.exists():
+            print("\nError! such file has not exist.")
+            return
+        
+        # check path file is not a file
+        if not path.is_file():
+            print("\n Error! Such file is not a file")
+            return
+        
+        
+        found = False
+        book_id = input("Enter book id for delete: ")
+        
+        # check book id is empty
+        if not book_id:
+            print("\n Error! Id should not be empty.")
+            return
+        
+        # if id is valid 
         with open(path, 'r') as file:
             book_items = file.readlines()
             for index, line in enumerate(book_items):
+                
+                #check empty line 
+                if not line:
+                    continue
+                
+                
                 book_item = line.strip().split(',')
                 
-                #Skip empty line
-                if not book_item:
-                    continue
-                
-                #validate book record
+                #check valid infor
                 if len(book_item)<6:
-                    print("Warning! invalid book record found")
-                    continue
+                    print("\n Error! such book information not found.")
+                    return
                 
-                #check book id
-                if book_item[0].strip()==book_id.strip():
+                #check id for book recod file
+                if book_item and book_item[0].strip()==book_id.strip():
                     found = True
-                    print("\n=============================")
-                    print(f"{book_item[1]} Book List")
-                    print("\n=============================")
-                    print(
-                        f"Book ID       : {book_item[0]}\n"
-                        f"Title         : {book_item[1]}\n"
-                        f"Author        : {book_item[2]}\n"
-                        f"Category      : {book_item[3]}\n"
-                        f"Price         : Rs.{book_item[4]}\n"
-                        f"Quantity      : {book_item[5]}"
-                    )
-                    
-                    print("\n================================")
-                    print("Update book ")
-                    print("Enter new information")
-                    print("================================")
-                    
-                    # if check input are empty
-                    book_title = input("Update book title: ").strip()
-                    if not book_title:
-                        print("Error! Book tile should not be empty")
-                        return
-                    
-                    book_author = input("Update book author name: ").strip()
-                    if not book_author:
-                        print("Error! Book author name should not be empty")
-                        return
-                    
-                    book_category = input("Update book category: ").strip()
-                    if not book_category:
-                        print("Error! Book category should not be empty")
-                        return
-                    
-                    # valid price 
-                    try:
-                        book_price = float(input("Update book price").strip())
-                        if book_price<0:
-                            print("Error! price is not a negative number.")
-                            return
-                    except ValueError:
-                        print("Error! enter a valid number.")
-                    
-                    # Quantity validation
-                    try:
-                        book_quantity = int(input("Update book quentity: ").strip())
-                        if book_quantity<0:
-                            print("Error! quantity is not a negative number.")
-                            return
-                    except ValueError:
-                        print("Error! enter a valid number")
-                    
-                    book_items[index] = (
-                        f"{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}"
-                    )
+                    book_items.pop(index)
+                
                     break
-    if found:
-        with open(path, 'w') as file:
-            file.writelines(book_items)
-        print(f"\n Book Id '{book_item[1]}' book updated successfully")
-        
-    else:
-        print("Error! such book id does not exist.")
-        
-        
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-        
-    
-
-                
-                
+        if found:
+            with open(path, 'w') as file:
+                file.writelines(book_items)
+            print("Book list deleted successfully.")
             
-    
+        else:
+            print("Error! such id book list does not exist.")
+    except PermissionError:
+        print("\n Error! you are not allow to delete book list")
+    except OSError as KeyError:
+        print(f"\nError! File system error. {KeyError}.")
+    except Exception as err:
+        print(f"\n Unexpected error! {err}")
+        
 
+
+def create_member():
+    try:
+        create_member_file = input("Enter file name to create member file: ").strip()
+        
+        #check member file name empty
+        if not create_member_file:
+            print("\n Error! file name should no be empty.")
+            return
+        
+        path = Path(create_member_file)
+        
+        #Check if path exsit system do not allow to create file
+        if path.exists():
+            if path.is_file():
+                print(f"\n Error {path} file is already exsit.")
+            else:
+                print(f"\n Error! {path} is not a file")
+                return
+            
+        # if file is not exit then user allow to create a file.
+        else:     
+            # user can enter file without using extension (.txt)
+            if path.suffix == "":
+                path = path.with_suffix(".txt")
+            
+            
+            with open(path, 'w') as file:
+                file.write()
+                pass
+            
+    except PermissionError:
+        print("\n Error! You have no permission to create file.")
+    except OSError as err:
+        print(f"\n Error! File system error. {err}")
+    except Exception as err:
+        print(f"\n Error! unexpected error. {err}")
+        
+                
 
 
 while True:
@@ -429,8 +529,11 @@ while True:
     
     print("19. Library Summery")
     print("Exit")
-    
-    choice = int(input("Please enter number what you want to do: ").strip())
+    try:
+        choice = int(input("Please enter number what you want to do: ").strip())
+    except ValueError:
+        print("\n Error! enter valid number")
+        continue
     
     if choice == 1:
         create_book_file()
@@ -449,6 +552,25 @@ while True:
     
     elif choice == 6:
         delete_book()
+    
+    elif choice == 7:
+        create_member()
+    
+    elif choice == 8:
+        add_member()
+    
+    elif choice == 9:
+        view_member()
+    
+    elif choice == 10:
+        search_member()
+    
+    elif choice == 11:
+        update_member()
+    
+    elif choice == 12:
+        delete_member
+            
         
         
     else:
