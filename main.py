@@ -499,94 +499,101 @@ def create_member():
         print(f"\n Error! unexpected error. {err}")
         
 def add_member():
-    
-    file_name = input("Enter member file name to add member: ").strip()
-    #check file name is empty or not.
-    if not file_name:
-        print("\n Error! File name should not be empty.")
-        return
-    
-    path = Path(file_name)
-    
-    #create extension autometically which could user allow file without using extesion (.txt)
-    if path.suffix == "":
-        path = path.with_suffix(".txt")
-    
-    #check path is not exsit:
-    if not path.exists():
-        print("\n Error! Such file has not found in folder.")
-        return
-    
-    #check it is not a file
-    if not path.is_file():
-        print("\n Error! This is not a file.")
-        return
-    
-    # enter member information to create data
-    member_id = input("Enter member ID: ").strip()
-    
-    #check id is empty:
-    if not member_id:
-        print("\n Erroe! member ID should not be empty.")
-        return
-    
-    #check id if user enter twice member id which is not allow to make repeat id name which must be unique
-    with open(path, 'r') as file:
-        for line in file:
-            #check line is empty
-            if not line.strip():
-                continue
-            info = line.strip().split(',')
-            #check id 
-            if info[0].strip()==member_id.strip():
-                print("\n Error! you are not allow to enter same id member.")
-                return
-    
-    member_name = input("Enter member name: ").strip()
-    #check empty member name
-    if not member_name:
-        print("\n Error! Member name should not be empty.")
-        return
-    
-    #check empty member age
     try:
-        member_age = int(input("Enter member age: ").strip())
-        #check member valid age:
-        if member_age<0:
-            print("\n Error! Age must be in positive number.")
+        file_name = input("Enter member file name to add member: ").strip()
+        #check file name is empty or not.
+        if not file_name:
+            print("\n Error! File name should not be empty.")
             return
-    except ValueError:
-        print("\n Please enter a valid age.")
-        return
-    
-    
-    member_gender = input("Enter gender: ").strip()
-    #check empty member gender
-    if not member_gender:
-        print("Error! Member gender should not be empty.")
-        return
-    
-    member_address = input("Enter address: ").strip()
-    #check empty member address
-    if not member_address:
-        print("\n Member address should not be empty.")
-        return
-    
-    member_phone_number = input("Enter member contact number: ").strip()
-    #check empty member contact number.
-    if not member_phone_number:
-        print("\m Member phone number should not be empty.")
-        return
-    
-    #store member information  in member_data
-    member_data = (
-        f"{member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
-    )
-    
-    #open and file file and append data
-    with open(path, 'a') as file:
-        file.write(member_data)
-    print("\n Member information added successfully.")
+        
+        path = Path(file_name)
+        
+        #create extension autometically which could user allow file without using extesion (.txt)
+        if path.suffix == "":
+            path = path.with_suffix(".txt")
+        
+        #check path is not exsit:
+        if not path.exists():
+            print("\n Error! Such file has not found in folder.")
+            return
+        
+        #check it is not a file
+        if not path.is_file():
+            print("\n Error! This is not a file.")
+            return
+        
+        # enter member information to create data
+        member_id = input("Enter member ID: ").strip()
+        
+        #check id is empty:
+        if not member_id:
+            print("\n Erroe! member ID should not be empty.")
+            return
+        
+        #check id if user enter twice member id which is not allow to make repeat id name which must be unique
+        with open(path, 'r') as file:
+            for line in file:
+                #check line is empty
+                if not line.strip():
+                    continue
+                info = line.strip().split(',')
+                #check id 
+                if info[0].strip()==member_id.strip():
+                    print("\n Error! you are not allow to enter same id member.")
+                    return
+        
+        member_name = input("Enter member name: ").strip()
+        #check empty member name
+        if not member_name:
+            print("\n Error! Member name should not be empty.")
+            return
+        
+        #check empty member age
+        try:
+            member_age = int(input("Enter member age: ").strip())
+            #check member valid age:
+            if member_age<0:
+                print("\n Error! Age must be in positive number.")
+                return
+        except ValueError:
+            print("\n Please enter a valid age.")
+            return
+        
+        
+        member_gender = input("Enter gender: ").strip()
+        #check empty member gender
+        if not member_gender:
+            print("Error! Member gender should not be empty.")
+            return
+        
+        member_address = input("Enter address: ").strip()
+        #check empty member address
+        if not member_address:
+            print("\n Member address should not be empty.")
+            return
+        
+        member_phone_number = input("Enter member contact number: ").strip()
+        #check empty member contact number.
+        if not member_phone_number:
+            print("\n Member phone number should not be empty.")
+            return
+        
+        #store member information  in member_data
+        member_data = (
+            f"{member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
+        )
+        
+        #open and file file and append data
+        with open(path, 'a') as file:
+            file.write(member_data)
+        print("\n Member information added successfully.")
+    except PermissionError:
+        print("\n Error! You have no permission to add member."())
+    except OSError as err:
+        print(f"\n Error! File system error: {err}"())
+    except Exception as err:
+        print(f"\n Error! Unexpected error: {err}"())
+
     
         
         
