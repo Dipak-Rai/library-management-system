@@ -54,7 +54,7 @@ def add_book():
         
         # Check extension of file if user not enter extension it allow to make .txt autometically
         if path.suffix == "":
-                    path = path.with_suffix(".txt")
+            path = path.with_suffix(".txt")
                     
                     
         # If file name does not exist
@@ -133,7 +133,68 @@ def add_book():
     except Exception as err:
         print(f"Unexpected error: {err}")
 
+def view_book():
+    try:
+        file_name = input("Enter book file name to view list: ").strip()
+        
+        # If user not enter file name
+        if not file_name:
+            print("Error! File name cannot be empty.")
+            return
+        
+        path = Path(file_name)
+        
+        # User can enter file name without extension (.txt)
+        if path.suffix == "":
+            path = path.with_suffix(".txt")
+        
+        # Check file not exist
+        if not path.exists():
+            print(f"Error! {path} does not exist.")
+            return
+            
+        # Check whether is this file
+        if not path.is_file():
+            print(f"Error! {path} is not a file")
+            return
+        
+        # If file exist:
+        found = False
+        if path.exists():
+            with open(path, 'r') as file:
+                for line in file:
+                    info = line.strip().split(',')
+                    if len(info)<6:
+                        print("Warning! invalid book record found.")
+                        continue
+                    
+                    found=True
+                    print("\n===============================")
+                    print("Library Books")
+                    print("===============================")
+                    print(
+                        f"Book ID       : {info[0]}\n"
+                        f"Title         : {info[1]}\n"
+                        f"Author        : {info[2]}\n"
+                        f"Category      : {info[3]}\n"
+                        f"Price         : Rs.{info[4]}\n"
+                        f"Quantity      : {info[5]}"
+                        
+                    )
+                    
+        if found:
+            print("\n Library books viewed successfully.")
+        else:
+            print("\n Sorry! No books record found")
+            
+    except PermissionError:
+        print("Error! You don't have permission to read this file")
+    except OSError as err:
+        print(f"Error! File system error: {err}")
 
+    
+                
+    
         
             
             
