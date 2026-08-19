@@ -191,18 +191,214 @@ def view_book():
         print("Error! You don't have permission to read this file")
     except OSError as err:
         print(f"Error! File system error: {err}")
+        
+        
 
-    
+def search_book():
+    try:
+        file_name = input("Enter file name to search book: ").strip()
+        
+        #check file name empty:
+        if not file_name:
+            print("Error! file name can't be empty.")
+            return
+        
+        # user can used file name without using extension '.txt'
+        path = Path(file_name)
+        if path.suffix == "":
+            path = path.with_suffix(".txt")
+            
+        # Check file path if not exist
+        if not path.exists():
+            print(f"Error! {path} file has not exist.")
+            return
+        
+        # Check is this file.
+        if not path.is_file():
+            print(f"Error! {path} is not a file")
+            return
+        
+        # if path exist: 
+        found = False
+        if path.exists():
+            book_id = input("Enter book id for search: ").strip()
+            
+            # check book id
+            if not book_id:
+                print("Error! Book ID cannot be empty.")
+                return
+            
+            with open(path, 'r') as file:
+                book_items = file.readlines()
                 
+                for line in book_items:
+                    info = line.strip().split(',')
+                    # skip empty line
+                    if not line.strip():
+                        continue
+                    
+                    # Check valid book record
+                    if len(info)<6:
+                        print("Warning! Invalid book record found.")
+                        continue
+                    
+                    if info[0].strip() == book_id.strip():
+                        found = True
+                        
+                        print("\n=================================")
+                        print(f"'{info[1]}' book is found")
+                        print("===================================")
+                        print(
+                            f"Book ID       : {info[0]}\n"
+                            f"Title         : {info[1]}\n"
+                            f"Author        : {info[2]}\n"
+                            f"Category      : {info[3]}\n"
+                            f"Price         : Rs.{info[4]}\n"
+                            f"Quantity      : {info[5]}"
+                        )
+                        break
+        if found:
+            print(f" found successfully.")
+        else:
+            print("Error! Such book has not exist.")
+    except PermissionError:
+        print("Error! You don't have permission to search book.")
+    except OSError as err:
+        print(f"Sorry! File system error: {err}")
+
+def update_book():
+    file_name = input("Enter file name for update: ").strip()
     
+    # If file name is empty:
+    if not file_name:
+        print("Error! File name should not be empty.")
+        return
+    
+    path = Path(file_name)
+    
+    # User can enter without use extension
+    if path.suffix==(""):
+        path = path.with_suffix(".txt")
         
-            
-            
+    
+    # If path not exist:
+    if not path.exists():
+        print("Error! Such file has not exist.")
+        return
+    
+    # If path file is not exist
+    if not path.is_file():
+        print("Error! file name is not a file ")
+        return
+    
+    # If path Exist
+    found = False
+    if path.exists():
+        book_id = input("Enter book id for update: ").strip()
+        
+        # if ID is empty
+        if not book_id:
+            print("Error! ID should not be empty.")
+            return
+        
+        with open(path, 'r') as file:
+            book_items = file.readlines()
+            for index, line in enumerate(book_items):
+                book_item = line.strip().split(',')
+                
+                #Skip empty line
+                if not book_item:
+                    continue
+                
+                #validate book record
+                if len(book_item)<6:
+                    print("Warning! invalid book record found")
+                    continue
+                
+                #check book id
+                if book_item[0].strip()==book_id.strip():
+                    found = True
+                    print("\n=============================")
+                    print(f"{book_item[1]} Book List")
+                    print("\n=============================")
+                    print(
+                        f"Book ID       : {book_item[0]}\n"
+                        f"Title         : {book_item[1]}\n"
+                        f"Author        : {book_item[2]}\n"
+                        f"Category      : {book_item[3]}\n"
+                        f"Price         : Rs.{book_item[4]}\n"
+                        f"Quantity      : {book_item[5]}"
+                    )
+                    
+                    print("\n================================")
+                    print("Update book ")
+                    print("Enter new information")
+                    print("================================")
+                    
+                    # if check input are empty
+                    book_title = input("Update book title: ").strip()
+                    if not book_title:
+                        print("Error! Book tile should not be empty")
+                        return
+                    
+                    book_author = input("Update book author name: ").strip()
+                    if not book_author:
+                        print("Error! Book author name should not be empty")
+                        return
+                    
+                    book_category = input("Update book category: ").strip()
+                    if not book_category:
+                        print("Error! Book category should not be empty")
+                        return
+                    
+                    # valid price 
+                    try:
+                        book_price = float(input("Update book price").strip())
+                        if book_price<0:
+                            print("Error! price is not a negative number.")
+                            return
+                    except ValueError:
+                        print("Error! enter a valid number.")
+                    
+                    # Quantity validation
+                    try:
+                        book_quantity = int(input("Update book quentity: ").strip())
+                        if book_quantity<0:
+                            print("Error! quantity is not a negative number.")
+                            return
+                    except ValueError:
+                        print("Error! enter a valid number")
+                    
+                    book_items[index] = (
+                        f"{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}"
+                    )
+                    break
+    if found:
+        with open(path, 'w') as file:
+            file.writelines(book_items)
+        print(f"\n Book Id '{book_item[1]}' book updated successfully")
+        
+    else:
+        print("Error! such book id does not exist.")
+        
+        
+                
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
         
     
+
+                
+                
+            
     
-    
-    
+
 
 
 while True:
@@ -211,7 +407,7 @@ while True:
     print("1. Create Book File")
     
     print("2. Add Book")
-    print("3. Search Book")
+    print("3. view Book")
     print("4. Search Book")
     print("5. Update Book")
     print("6. Delete Book")

@@ -1,1 +1,1 @@
-101, Python Programming, Dipak Rai, Programming, 800.0, 5
+101, JS, Sandira Limbu, Scripted programming language, 1200.0, 12
