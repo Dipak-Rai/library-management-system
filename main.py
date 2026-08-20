@@ -594,7 +594,63 @@ def add_member():
     except Exception as err:
         print(f"\n Error! Unexpected error: {err}"())
 
+def view_member():
+    file_name = input("Enter member file name to view: ")
+    #check file name empty:
+    if not file_name:
+        print("\n Error! File name should not be empty.")
+        return
     
+    path = Path(file_name)
+    #using file extension: 
+    if path.suffix == "":
+        path = path.with_suffix(".txt")
+    
+    #check if path exist   
+    if not path.exists():
+        print(f"\n Error! {path} file does not exsit.")
+        return
+    
+    #check is this file or not
+    if not path.is_file():
+        print(f"\n Error! {path} file not a file.")
+        return
+    
+    found = False
+    #if path exsit open file 
+    with open(path, 'r') as file:
+        for line in file:
+            #check line is empty
+            if not line.strip():
+                continue
+            
+            info = line.strip().split(',')
+            #check valid file
+            
+            if len(info)<6:
+                print("\nError! such member doest no found.")
+                continue
+            found = True
+            print("\n==============================================")
+            print("========== || Library Members ||============= ")
+            print("==============================================")
+            print(
+                f"\nMember ID: {info[0].strip()}\n"
+                f"Name: {info[1].strip()}\n"
+                f"Age: {info[2]}\n"
+                f"Gender: {info[3].strip()}\n"
+                f"Address: {info[4].strip()}\n"
+                f"Phone: {info[5].strip()}\n"
+            )
+    if found:
+        print("\nView library member successfully.")
+    else:
+        print("\n Error! Such file does not exsit.")
+        
+        
+def search_member():
+    pass
+        
         
         
     
