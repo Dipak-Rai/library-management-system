@@ -617,39 +617,107 @@ def view_member():
         return
     
     found = False
-    #if path exsit open file 
-    with open(path, 'r') as file:
-        for line in file:
-            #check line is empty
-            if not line.strip():
-                continue
-            
-            info = line.strip().split(',')
-            #check valid file
-            
-            if len(info)<6:
-                print("\nError! such member doest no found.")
-                continue
-            found = True
-            print("\n==============================================")
-            print("========== || Library Members ||============= ")
-            print("==============================================")
-            print(
-                f"\nMember ID: {info[0].strip()}\n"
-                f"Name: {info[1].strip()}\n"
-                f"Age: {info[2]}\n"
-                f"Gender: {info[3].strip()}\n"
-                f"Address: {info[4].strip()}\n"
-                f"Phone: {info[5].strip()}\n"
-            )
-    if found:
-        print("\nView library member successfully.")
-    else:
-        print("\n Error! Such file does not exsit.")
+    try:
+        #if path exsit open file 
+        with open(path, 'r') as file:
+            for line in file:
+                #check line is empty
+                if not line.strip():
+                    continue
+                
+                info = line.strip().split(',')
+                #check valid file
+                
+                if len(info)<6:
+                    print("\nError! such member doest no found.")
+                    continue
+                found = True
+                print("\n==============================================")
+                print("========== || Library Members ||============= ")
+                print("==============================================")
+                print(
+                    f"\nMember ID: {info[0].strip()}\n"
+                    f"Name: {info[1].strip()}\n"
+                    f"Age: {info[2]}\n"
+                    f"Gender: {info[3].strip()}\n"
+                    f"Address: {info[4].strip()}\n"
+                    f"Phone: {info[5].strip()}\n"
+                )
+        if found:
+            print("\nView library member successfully.")
+            return
+        else:
+            print("\n Error! Such file does not exsit.")
+            return
+    except PermissionError:
+        print("\n Error! You have no permission to view library members")
+    except OSError as err:
+        print(f"\n Error! File system error: {err}")
         
         
 def search_member():
-    pass
+    file_name = input("Enter file name to search library members: ")
+    #check file is empty:
+    if not file_name:
+        print("\nError! fine name should not be empty.")
+        return
+    
+    #make path of file 
+    path = Path(file_name)
+    
+    # make .txt extension automatically.
+    if path.suffix=="":
+        path = path.with_suffix(".txt")
+    
+    # Check if path isn't exist:
+    if not path.exists():
+        print(f"\nError! {path} file doest not exist.")
+        return
+    
+    #Check is this file :
+    if not path.is_file():
+        print(f"\n Error! {path} is not a file")
+        return
+    
+    
+    #If path exsit:
+    found = False
+    member_id = input("Enter member id: ").strip()
+    with open(path, 'r') as file:
+        for line in file:
+            
+            #check line is empty:
+            if not line.strip():
+                continue
+            
+            info = line.strip().split(",")
+            
+            #check valid information
+            if len(info)<6:
+                print("\n Error! please enter valid information.")
+                return
+            
+            #check id for search member:
+            if info[0].strip()==member_id.strip():
+                #if found continue...
+                found =True
+                print("\n =============|| Library Member ||==============")
+                print("=====================================================")
+                print(
+                    f"\nMember ID: {info[0].strip()}\n"
+                    f"Name: {info[1].strip()}\n"
+                    f"Age: {info[2]}\n"
+                    f"Gender: {info[3].strip()}\n"
+                    f"Address: {info[4].strip()}\n"
+                    f"Phone: {info[5].strip()}\n"
+                )
+                break
+    if found:
+        print("\nLibrary Member searched successfully.")
+        return
+    else:
+        print("\nLibrary member does no found")
+        
         
         
         
