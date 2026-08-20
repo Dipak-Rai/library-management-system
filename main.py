@@ -857,41 +857,50 @@ def delete_member():
         return
     
     found=False
-    member_id = input("Enter member ID for delete: ").strip()
-    
-    #check member id is empty.
-    if not member_id:
-        print("\nError! Member Id should not be empty.")
-        return
-    with open(path, 'r') as file:
-        members = file.readlines()
+    try:
+        member_id = input("Enter member ID for delete: ").strip()
         
-        for index, line in enumerate(members):
+        
+        #check member id is empty.
+        if not member_id:
+            print("\nError! Member Id should not be empty.")
+            return
+        with open(path, 'r') as file:
+            members = file.readlines()
             
-            #check empty line:
-            if not line.strip():
-                continue
-            
-            member = line.strip().split(",")
-            
-            #check validate information 
-            if len(member)<6:
-                print("\n Error! Enter valid information.")
-                return
-            
-            if member and member[0].strip() == member_id.strip():
-                found = True
-                members.pop(index)
-                break
-            
-    if found:
-        with open(path, 'w') as file:
-            file.writelines(members)
-        print ("\n Member deleted successfully.")
-        return
-    else:
-        print("\n Error! Such member does not found.")
-            
+            for index, line in enumerate(members):
+                
+                #check empty line:
+                if not line.strip():
+                    continue
+                
+                member = line.strip().split(",")
+                
+                #check validate information 
+                if len(member)<6:
+                    print("\n Error! Enter valid information.")
+                    return
+                
+                if member and member[0].strip() == member_id.strip():
+                    found = True
+                    members.pop(index)
+                    break
+                
+        if found:
+            with open(path, 'w') as file:
+                file.writelines(members)
+            print ("\n Member deleted successfully.")
+            return
+        else:
+            print("\n Error! Such member does not found.")
+    except PermissionError:
+        print("\n Error! Your are not allow to delete member.")
+    except OSError as err:
+        print(f"\nError! File System error: {err}")
+    except Exception as err:
+        print(f"\nError! Unexpected error.")
+
+
 
 
     
