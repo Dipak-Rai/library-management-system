@@ -835,6 +835,65 @@ def update_member():
     else:
         print("\nError! Member information does not found.")
         return
+
+def delete_member():
+    file_name = input("Enter member file name: ").strip()
+    #check if file name is empty:
+    if not file_name:
+        print("\n Error! File name should not be empty.")
+        return
+    
+    path = Path(file_name)
+    #Input extension autometically:
+    if path.suffix=="":
+        path = path.with_suffix(".txt")
+    
+    if not path.exists():
+        print(f"\nError! {path}, Such file has not found.")
+        return
+    
+    if not path.is_file():
+        print(f"\nError! {path}, Such file is not a file.")
+        return
+    
+    found=False
+    member_id = input("Enter member ID for delete: ").strip()
+    
+    #check member id is empty.
+    if not member_id:
+        print("\nError! Member Id should not be empty.")
+        return
+    with open(path, 'r') as file:
+        members = file.readlines()
+        
+        for index, line in enumerate(members):
+            
+            #check empty line:
+            if not line.strip():
+                continue
+            
+            member = line.strip().split(",")
+            
+            #check validate information 
+            if len(member)<6:
+                print("\n Error! Enter valid information.")
+                return
+            
+            if member and member[0].strip() == member_id.strip():
+                found = True
+                members.pop(index)
+                break
+            
+    if found:
+        with open(path, 'w') as file:
+            file.writelines(members)
+        print ("\n Member deleted successfully.")
+        return
+    else:
+        print("\n Error! Such member does not found.")
+            
+
+
     
         
     
@@ -916,7 +975,7 @@ while True:
         update_member()
     
     elif choice == 12:
-        delete_member
+        delete_member()
             
         
         
