@@ -1,2 +1,1 @@
-M001, Dipak Rai, 26, Male, Bhaktapur, 9800000000
-M001, Dipak Rai, 27, Male, Kathmandu, 123434515
+M002, Dipak Chamling rai, 26, Male, Khotang, 9812345678

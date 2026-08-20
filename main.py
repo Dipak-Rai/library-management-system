@@ -681,43 +681,164 @@ def search_member():
     
     
     #If path exsit:
+    try:
+        found = False
+        member_id = input("Enter member id: ").strip()
+        with open(path, 'r') as file:
+            for line in file:
+                
+                #check line is empty:
+                if not line.strip():
+                    continue
+                
+                info = line.strip().split(",")
+                
+                #check valid information
+                if len(info)<6:
+                    print("\n Error! please enter valid information.")
+                    return
+                
+                #check id for search member:
+                if info[0].strip()==member_id.strip():
+                    #if found continue...
+                    found =True
+                    print("\n =============|| Library Member ||==============")
+                    print("=====================================================")
+                    print(
+                        f"\nMember ID: {info[0].strip()}\n"
+                        f"Name: {info[1].strip()}\n"
+                        f"Age: {info[2]}\n"
+                        f"Gender: {info[3].strip()}\n"
+                        f"Address: {info[4].strip()}\n"
+                        f"Phone: {info[5].strip()}\n"
+                    )
+                    break
+        if found:
+            print("\nLibrary Member searched successfully.")
+            return
+        else:
+            print("\nLibrary member does no found")
+            return
+    except PermissionError:
+        print("\n Error! You have no permmision to search library member.")
+    except OSError as err:
+        print(f"\n Error! File system err: {err}")
+    
+    
+def update_member():
+    file_name = input("Enter member file name for update: ").strip()
+    #check if file name is empty:
+    if not file_name:
+        print("\n Error! File name should not be empty.")
+        return
+    
+    path = Path(file_name)
+    # Add extension (.txt) autometically:
+    if path.suffix=="":
+        path = path.with_suffix(".txt")
+    
+    #check file name not exsit:
+    if not path.exists():
+        print("\n Error! {path} file is not exist.")
+        return
+    
+    if not path.is_file:
+        print("\n Error! {path} file is not a file.")
+        return
+    
     found = False
-    member_id = input("Enter member id: ").strip()
+    member_id = input("Enter the member ID for update: ").strip()
+    
+    #If exist 
     with open(path, 'r') as file:
-        for line in file:
-            
+        members = file.readlines()
+        
+        # using for loop in member file data:
+        for index, line in enumerate(members):
             #check line is empty:
             if not line.strip():
                 continue
             
-            info = line.strip().split(",")
-            
-            #check valid information
-            if len(info)<6:
-                print("\n Error! please enter valid information.")
+            member = line.strip().split(',')
+            #check valid information:
+            if len(member)<6:
+                print("\n Error! Please input valid information.")
                 return
             
-            #check id for search member:
-            if info[0].strip()==member_id.strip():
-                #if found continue...
-                found =True
-                print("\n =============|| Library Member ||==============")
-                print("=====================================================")
+            #check ID 
+            if member[0].strip()==member_id.strip():
+                found = True
+                print("\n============|| Current Library Member ||===============")
+                print("==========================================================")
                 print(
-                    f"\nMember ID: {info[0].strip()}\n"
-                    f"Name: {info[1].strip()}\n"
-                    f"Age: {info[2]}\n"
-                    f"Gender: {info[3].strip()}\n"
-                    f"Address: {info[4].strip()}\n"
-                    f"Phone: {info[5].strip()}\n"
+                    f"Member ID: {member[0]}\n"
+                    f"Member Name: {member[1]}\n"
+                    f"Member Age: {member[2]}\n"
+                    f"Member Gender: {member[3]}\n"
+                    f"Member Address: {member[4]}\n"
+                    f"Member Contact Number: {member[5]}"
+                )
+                
+                print("\n===========|| Update Member Information ||===================")
+                print("==========================================================")
+                
+                member_name = input("Update name: ").strip()
+                #check if member name is empty
+                if not member_name:
+                    print("\nError! Member name should not be empty: ")
+                    return
+                
+                member_age = int(input("Update member age: ").strip())
+                #check member age empty
+                if not member_age:
+                    print("\nError! Member age should not be empty")
+                    return
+                
+                #check age validation.
+                try:
+                    if member_age<0 and member_age>120:
+                        print("\nError! Member age must be between 0 to 120.")
+                        return
+                except ValueError:
+                    print("\nError! Age naver in negative number")
+                    return
+                
+                member_gender = input("Update member gender: ").strip()
+                
+                #Check member genter is empty:
+                if not member_gender:
+                    print("\nError! Member gender should not be empty.")
+                    return
+                
+                member_address = input("Update member address: ").strip()
+                #check member address is empty:
+                if not member_address:
+                    print("\nError! Member address should not be empty.")
+                    return
+                
+                member_phone_number = input("Update member contact number: ").strip()
+                #check member phone number empty:
+                if not member_phone_number:
+                    print("\nError! Member contact number should not be empty.")
+                    return
+                
+                members[index] = (
+                    f"{member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
                 )
                 break
+            
     if found:
-        print("\nLibrary Member searched successfully.")
+        with open(path, 'w') as file: 
+            file.writelines(members[index])
+        print("\nMember updated successfully.")
         return
     else:
-        print("\nLibrary member does no found")
+        print("\nError! Member information does not found.")
+        return
+    
         
+    
+         
         
         
         
