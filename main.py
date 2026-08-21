@@ -726,6 +726,7 @@ def search_member():
     
     
 def update_member():
+    
     file_name = input("Enter member file name for update: ").strip()
     #check if file name is empty:
     if not file_name:
@@ -739,102 +740,109 @@ def update_member():
     
     #check file name not exsit:
     if not path.exists():
-        print("\n Error! {path} file is not exist.")
+        print(f"\n Error! {path} file is not exist.")
         return
     
-    if not path.is_file:
-        print("\n Error! {path} file is not a file.")
+    if not path.is_file():
+        print(f"\n Error! {path} file is not a file.")
         return
     
     found = False
     member_id = input("Enter the member ID for update: ").strip()
     
     #If exist 
-    with open(path, 'r') as file:
-        members = file.readlines()
-        
-        # using for loop in member file data:
-        for index, line in enumerate(members):
-            #check line is empty:
-            if not line.strip():
-                continue
+    try: 
+        with open(path, 'r') as file:
+            members = file.readlines()
             
-            member = line.strip().split(',')
-            #check valid information:
-            if len(member)<6:
-                print("\n Error! Please input valid information.")
-                return
-            
-            #check ID 
-            if member[0].strip()==member_id.strip():
-                found = True
-                print("\n============|| Current Library Member ||===============")
-                print("==========================================================")
-                print(
-                    f"Member ID: {member[0]}\n"
-                    f"Member Name: {member[1]}\n"
-                    f"Member Age: {member[2]}\n"
-                    f"Member Gender: {member[3]}\n"
-                    f"Member Address: {member[4]}\n"
-                    f"Member Contact Number: {member[5]}"
-                )
+            # using for loop in member file data:
+            for index, line in enumerate(members):
+                #check line is empty:
+                if not line.strip():
+                    continue
                 
-                print("\n===========|| Update Member Information ||===================")
-                print("==========================================================")
-                
-                member_name = input("Update name: ").strip()
-                #check if member name is empty
-                if not member_name:
-                    print("\nError! Member name should not be empty: ")
+                member = line.strip().split(',')
+                #check valid information:
+                if len(member)<6:
+                    print("\n Error! Please input valid information.")
                     return
                 
-                member_age = int(input("Update member age: ").strip())
-                #check member age empty
-                if not member_age:
-                    print("\nError! Member age should not be empty")
-                    return
-                
-                #check age validation.
-                try:
-                    if member_age<0 and member_age>120:
-                        print("\nError! Member age must be between 0 to 120.")
+                #check ID 
+                if member[0].strip()==member_id.strip():
+                    found = True
+                    print("\n============|| Current Library Member ||===============")
+                    print("==========================================================")
+                    print(
+                        f"Member ID: {member[0]}\n"
+                        f"Member Name: {member[1]}\n"
+                        f"Member Age: {member[2]}\n"
+                        f"Member Gender: {member[3]}\n"
+                        f"Member Address: {member[4]}\n"
+                        f"Member Contact Number: {member[5]}"
+                    )
+                    
+                    print("\n===========|| Update Member Information ||===================")
+                    print("==========================================================")
+                    
+                    member_name = input("Update name: ").strip()
+                    #check if member name is empty
+                    if not member_name:
+                        print("\nError! Member name should not be empty: ")
                         return
-                except ValueError:
-                    print("\nError! Age naver in negative number")
-                    return
+                   
+                    #check age validation.
+                    try:
+                        member_age = int(input("Update member age: ").strip())
+                        #check member age empty
+                        if not member_age:
+                            print("\nError! Member age should not be empty")
+                            return
+                        
+                        if member_age<0 or member_age>120:
+                            print("\nError! Member age must be between 0 to 120.")
+                            return
+                        
+                    except ValueError:
+                        print("\nError! Enter a valid age")
+                        return
+                    
+                    member_gender = input("Update member gender: ").strip()
+                    
+                    #Check member genter is empty:
+                    if not member_gender:
+                        print("\nError! Member gender should not be empty.")
+                        return
+                    
+                    member_address = input("Update member address: ").strip()
+                    #check member address is empty:
+                    if not member_address:
+                        print("\nError! Member address should not be empty.")
+                        return
+                    
+                    member_phone_number = input("Update member contact number: ").strip()
+                    #check member phone number empty:
+                    if not member_phone_number:
+                        print("\nError! Member contact number should not be empty.")
+                        return
+                    
+                    members[index] = (
+                        f"{member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
+                    )
+                    break
                 
-                member_gender = input("Update member gender: ").strip()
-                
-                #Check member genter is empty:
-                if not member_gender:
-                    print("\nError! Member gender should not be empty.")
-                    return
-                
-                member_address = input("Update member address: ").strip()
-                #check member address is empty:
-                if not member_address:
-                    print("\nError! Member address should not be empty.")
-                    return
-                
-                member_phone_number = input("Update member contact number: ").strip()
-                #check member phone number empty:
-                if not member_phone_number:
-                    print("\nError! Member contact number should not be empty.")
-                    return
-                
-                members[index] = (
-                    f"{member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
-                )
-                break
-            
-    if found:
-        with open(path, 'w') as file: 
-            file.writelines(members[index])
-        print("\nMember updated successfully.")
-        return
-    else:
-        print("\nError! Member information does not found.")
-        return
+        if found:
+            with open(path, 'w') as file: 
+                file.writelines(members)
+            print("\nMember updated successfully.")
+            return
+        else:
+            print("\nError! Member information does not found.")
+            return
+    except PermissionError:
+        print("\nError! You have no permission to update library member.")
+    except OSError as err:
+        print(f"\nError! File system error: {err}")
+        
 
 def delete_member():
     file_name = input("Enter member file name: ").strip()
@@ -902,7 +910,211 @@ def delete_member():
 
 
 
+def create_borrow_book_file():
+    borrow_book_file = input("Enter borrow book filne nane: ").strip()
+    #check if empty file name 
+    if not borrow_book_file:
+        print("Error! File name should not be empty")
+        return
+    
+    path = Path(borrow_book_file)
+    
+    
+    #path not exist:
+    try:
+        
+        if path.exists():
+            if path.is_file():
+                print(f"Error! {path} file is not a file")
+                return
+            else:
+                print(f"Error! {path} file is already exist.")
+                return
+        
+        #Path not exist:
+        else:
+            #add extension (.txt) automatically
+            if path.suffix=="":
+                path = path.with_suffix(".txt")
+                    
+            with open(path,'w') as file:
+                pass
+            print("File created successfully.")
+            return
+    except PermissionError:
+        print("\n Error! you have no permissioon to create file")
+    except OSError as err:
+        print(f"Error! File system error: {err}")
+    except Exception as err:
+        print(f"Error! unexpectetd error: {err}")
 
+
+    
+def add_borrow_book_member():
+    
+    borrow_file_name = input("Enter borrow book file name: ").strip()
+    #if empty file name:
+    if not borrow_file_name:
+        print("\nError! Fine name should not be empty.")
+        return
+    
+    path = Path(borrow_file_name)
+    #add extension (.txt) autometically:
+    if path.suffix=="":
+        path=path.with_suffix(".txt")
+        
+    #if path does not exsit:   
+    if not path.exists():
+        print(f"\nError! {path} file does not exist.")
+        return
+    
+    #If file is not a file: 
+    if not path.exists():
+        print(f"\nError! {path} file does not exist.")
+        return
+    
+    
+    borrow_id = input("Enter borrow book id: ").strip()
+    #if borrow id is empty:
+    if not borrow_id:
+        print("\nError! Id should not be empty.")
+    with open(path, 'r') as file:
+        
+        for line in file:
+            # if line is empty:
+            if not line.strip():
+                continue
+            
+            info = line.strip().split(',')
+            #if id is match user no allow to add same id number
+            if info[0].strip()==borrow_id.strip():
+                found=True
+                print("\nError! Borrow id already exist.")
+                return
+                    
+    
+    
+    
+    
+    # ===============|| Member File ||===================
+            
+    member_file = input("Enter member file name: ").strip()
+    #if empty member file name:
+    if not member_file:
+        print("\nError! member file name should not be empty.")
+        return
+    
+    path_member = Path(member_file)
+    
+    #add extension (.txt) autometically:
+    if path_member.suffix == "":
+        path_member = path_member.with_suffix(".txt")
+    
+    #if path not exist:
+    if not path_member.exists():
+        print(f"\nError! {path_member} file does not exist.")
+        return
+    
+    #if file not a file:
+    if not path_member.is_file():
+        print(f"\nError! {path_member} file is not a file.")
+        return
+    
+    
+    member_id = input("Enter member id: ").strip()
+    #if member id is empty: 
+    if not member_id:
+        print("\nError! Member id not found.")
+        return
+    found = False
+    with open(path_member, 'r') as file:
+        for line in file:
+            #if line is empty
+            if not line.strip():
+                continue
+            info = line.strip().split(',')
+            if info[0].strip()==member_id.strip():
+                found = True
+                break
+    if not found:        
+        print("\n sorry member id not found.")
+        return
+    
+    
+    
+    
+    
+    
+           
+    book_file_name = input("Enter book id: ").strip()
+    #check book id is empty:
+    if not book_file_name:
+        print("Error! book id should not be empty.")
+        return
+    
+    path_book = Path(book_file_name)
+    
+    #add extension autometically
+    if path_book.suffix==".txt":
+        path_book = path_book.with_suffix(".txt")
+        
+    if not path_book.exists():
+        print(f"\nError! {path_book} file not exist")
+        return
+    
+    if not path_book.is_file():
+        print(f"\nError! {path_book} file is not a file")
+        return
+    
+    
+    book_id = input("Enter book id: ").strip()
+    if not book_id:
+        print("\nError! book id should not be empty.")
+        return
+    
+    found = False
+    with open(path_book, 'r') as file:
+        for line in file:
+            if not line.strip():
+                continue
+            
+            info = line.strip().split(",")
+            if info[0].strip() == book_id.strip():
+                found = True
+                break
+            
+    if not found:
+        print("\nError! sorry book id doest found.")
+        return
+    
+    borrow_date = input("Enter borrow date: ").strip()
+    if not borrow_date:
+        print("\nError! borrow book date should not be empty")
+        return
+    
+    borrow_info = (
+        f"{borrow_id}, {member_id}, {book_id}, {borrow_date}\n"
+    
+    )
+    
+    with open(path, 'a') as file:
+        file.write(borrow_info)
+    print("\n Borrow book successfully.")
+    
+            
+            
+        
+    
+                
+    
+                
+    
+   
+    
+    
+       
+    
+    
     
         
     
@@ -985,6 +1197,14 @@ while True:
     
     elif choice == 12:
         delete_member()
+        
+    elif choice == 13:
+        create_borrow_book_file()
+    
+    elif choice == 13:
+        add_borrow_book_member()
+        
+        
             
         
         
