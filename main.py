@@ -1131,7 +1131,66 @@ def add_borrow_book_member():
         print(f"\nError! unexpected error. {err}")
         
     
-            
+def view_borrow_book():
+    
+    file_name = input("Enter file name: ").strip()
+    if not file_name:
+       print("\nError! File name shoud not be empty.")
+       return
+   
+    path = Path(file_name)
+   
+    if path.suffix=="":
+       path = path.with_suffix(".txt")
+    
+    
+    if not path.exists():
+        print(f"\nError! {path} file has not exist.")
+        return
+    
+    if not path.is_file():
+        print(f"\nError! {path} file is not a file.")
+        return
+    
+    try:
+        record_found = False
+        with open(path, 'r') as file: 
+            for line in file:
+                if not line.strip():
+                    continue
+                
+                info = line.strip().split(',')
+                if len(info)<4:
+                    print("\nWarning! Invalid data")    
+                    continue
+                
+                record_found = True
+                print("================================")
+                print("Borrowed Book")
+                print("================================")
+                print(
+                f"Borrow ID         : {info[0]}\n"
+                f"Member ID         : {info[1]}\n"
+                f"Book ID           : {info[2]}\n"
+                f"Borrow Date       : {info[3]}"
+                )
+                print("\n================================")
+        if record_found:
+            print("\nView borrowed book successfully.")
+            return
+        else:
+            print("\nSorry! No borrowed book records found.")
+        return
+    except PermissionError:
+        print("\nError! You have no permission to view borrow book.")
+    except OSError as err:
+        print(f"\nError! File system error: {err}")
+    except Exception as err:
+        print(f"\nUnexpected error: {err}")
+        
+        
+    
+                  
             
         
     
@@ -1233,6 +1292,9 @@ while True:
     
     elif choice == 14:
         add_borrow_book_member()
+        
+    elif choice == 15:
+        view_borrow_book()
         
            
     else:
