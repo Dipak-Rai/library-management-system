@@ -1,0 +1,12 @@
+
+B001, Python Programming, Mark Lutz, Programming, 2500.0, 5
+
+B002, Clean Code, Robert C. Martin, Programming, 3000.0, 3
+
+B003, The Pragmatic Programmer, Andrew Hunt, Programming, 2800.0, 4
+
+B004, Database System Concepts, Abraham Silberschatz, Database, 3500.0, 2
+
+B005, Artificial Intelligence, Stuart Russell, AI, 4000.0, 3
+
+B006, Computer Networks, Andrew S. Tanenbaum, Networking, 3200.0, 4

@@ -1,0 +1,9 @@
+
+ M001, Dipak Rai, 25, Male, Kathmandu, 9800000001
+
+ M002, Ram Sharma, 30, Male, Bhaktapur, 9800000002
+
+ M003, Sita Rai, 22, Female, Lalitpur, 9800000003
+
+ M004, Hari Thapa, 28, Male, Pokhara, 98000000004
+

@@ -118,7 +118,7 @@ def add_book():
         
                 
         book_item = (
-            f"{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}"
+            f"\n{book_id}, {book_title}, {book_author}, {book_category}, {book_price}, {book_quantity}\n"
             )
                 
         with open(path, 'a') as file:
@@ -580,7 +580,7 @@ def add_member():
         
         #store member information  in member_data
         member_data = (
-            f"{member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
+            f"\n {member_id}, {member_name}, {member_age}, {member_gender}, {member_address}, {member_phone_number}\n"
         )
         
         #open and file file and append data
@@ -982,146 +982,154 @@ def create_borrow_book_file():
 
     
 def add_borrow_book_member():
-    
-    borrow_file_name = input("Enter borrow book file name: ").strip()
-    #if empty file name:
-    if not borrow_file_name:
-        print("\nError! Fine name should not be empty.")
-        return
-    
-    path = Path(borrow_file_name)
-    #add extension (.txt) autometically:
-    if path.suffix=="":
-        path=path.with_suffix(".txt")
+    try: 
+        borrow_file_name = input("Enter borrow book file name: ").strip()
+        #if empty file name:
+        if not borrow_file_name:
+            print("\nError! Fine name should not be empty.")
+            return
         
-    #if path does not exsit:   
-    if not path.exists():
-        print(f"\nError! {path} file does not exist.")
-        return
-    
-    #If file is not a file: 
-    if not path.is_file():
-        print(f"\nError! {path} file is not a file.")
-        return
-    
-    
-    borrow_id = input("Enter borrow book id: ").strip()
-    #if borrow id is empty:
-    if not borrow_id:
-        print("\nError! Id should not be empty.")
-        return
-    
-    with open(path, 'r') as file:
-        
-        for line in file:
-            # if line is empty:
-            if not line.strip():
-                continue
+        path = Path(borrow_file_name)
+        #add extension (.txt) autometically:
+        if path.suffix=="":
+            path=path.with_suffix(".txt")
             
-            info = line.strip().split(',')
-            #if id is match user no allow to add same id number
-            if info[0].strip()==borrow_id.strip():
-                print("\nError! Borrow id already exist.")
-                return
+        #if path does not exsit:   
+        if not path.exists():
+            print(f"\nError! {path} file does not exist.")
+            return
+        
+        #If file is not a file: 
+        if not path.is_file():
+            print(f"\nError! {path} file is not a file.")
+            return
+        
+        
+        borrow_id = input("Enter borrow book id: ").strip()
+        #if borrow id is empty:
+        if not borrow_id:
+            print("\nError! Id should not be empty.")
+            return
+        
+        with open(path, 'r') as file:
+            
+            for line in file:
+                # if line is empty:
+                if not line.strip():
+                    continue
+                
+                info = line.strip().split(',')
+                #if id is match user no allow to add same id number
+                if info[0].strip()==borrow_id.strip():
+                    print("\nError! Borrow id already exist.")
+                    return
 
-    # ===============|| Member File ||===================
-            
-    member_file = input("Enter member file name: ").strip()
-    #if empty member file name:
-    if not member_file:
-        print("\nError! member file name should not be empty.")
-        return
-    
-    path_member = Path(member_file)
-    
-    #add extension (.txt) autometically:
-    if path_member.suffix == "":
-        path_member = path_member.with_suffix(".txt")
-    
-    #if path not exist:
-    if not path_member.exists():
-        print(f"\nError! {path_member} file does not exist.")
-        return
-    
-    #if file not a file:
-    if not path_member.is_file():
-        print(f"\nError! {path_member} file is not a file.")
-        return
-    
-    
-    member_id = input("Enter member id: ").strip()
-    #if member id is empty: 
-    if not member_id:
-        print("\nError! Member id not found.")
-        return
-    found = False
-    with open(path_member, 'r') as file:
-        for line in file:
-            #if line is empty
-            if not line.strip():
-                continue
-            info = line.strip().split(',')
-            if info[0].strip()==member_id.strip():
-                found = True
-                break
-    if not found:        
-        print("\n sorry member id not found.")
-        return
-         
-    book_file_name = input("Enter book id: ").strip()
-    #check book id is empty:
-    if not book_file_name:
-        print("Error! book id should not be empty.")
-        return
-    
-    path_book = Path(book_file_name)
-    
-    #add extension autometically
-    if path_book.suffix=="":
-        path_book = path_book.with_suffix(".txt")
+        # ===============|| Member File ||===================
+                
+        member_file = input("Enter member file name: ").strip()
+        #if empty member file name:
+        if not member_file:
+            print("\nError! member file name should not be empty.")
+            return
         
-    if not path_book.exists():
-        print(f"\nError! {path_book} file not exist")
-        return
-    
-    if not path_book.is_file():
-        print(f"\nError! {path_book} file is not a file")
-        return
-    
-    
-    book_id = input("Enter book id: ").strip()
-    if not book_id:
-        print("\nError! book id should not be empty.")
-        return
-    
-    found = False
-    with open(path_book, 'r') as file:
-        for line in file:
-            if not line.strip():
-                continue
+        path_member = Path(member_file)
+        
+        #add extension (.txt) autometically:
+        if path_member.suffix == "":
+            path_member = path_member.with_suffix(".txt")
+        
+        #if path not exist:
+        if not path_member.exists():
+            print(f"\nError! {path_member} file does not exist.")
+            return
+        
+        #if file not a file:
+        if not path_member.is_file():
+            print(f"\nError! {path_member} file is not a file.")
+            return
+        
+        
+        member_id = input("Enter member id: ").strip()
+        #if member id is empty: 
+        if not member_id:
+            print("\nError! Member id not found.")
+            return
+        found = False
+        with open(path_member, 'r') as file:
+            for line in file:
+                #if line is empty
+                if not line.strip():
+                    continue
+                info = line.strip().split(',')
+                if info[0].strip()==member_id.strip():
+                    found = True
+                    break
+        if not found:        
+            print("\n sorry member id not found.")
+            return
+        
             
-            info = line.strip().split(",")
-            if info[0].strip() == book_id.strip():
-                found = True
-                break
+        book_file_name = input("Enter book file name: ").strip()
+        #check book id is empty:
+        if not book_file_name:
+            print("Error! book id should not be empty.")
+            return
+        
+        path_book = Path(book_file_name)
+        
+        #add extension autometically
+        if path_book.suffix=="":
+            path_book = path_book.with_suffix(".txt")
             
-    if not found:
-        print("\nError! sorry book id doest found.")
-        return
-    
-    borrow_date = input("Enter borrow date: ").strip()
-    if not borrow_date:
-        print("\nError! borrow book date should not be empty")
-        return
-    
-    borrow_info = (
-        f"{borrow_id}, {member_id}, {book_id}, {borrow_date}\n"
-    
-    )
-    
-    with open(path, 'a') as file:
-        file.write(borrow_info)
-    print("\n Borrow book successfully.")
+        if not path_book.exists():
+            print(f"\nError! {path_book} file not exist")
+            return
+        
+        if not path_book.is_file():
+            print(f"\nError! {path_book} file is not a file")
+            return
+        
+        
+        book_id = input("Enter book id: ").strip()
+        if not book_id:
+            print("\nError! book id should not be empty.")
+            return
+        
+        found = False
+        with open(path_book, 'r') as file:
+            for line in file:
+                if not line.strip():
+                    continue
+                
+                info = line.strip().split(",")
+                if info[0].strip() == book_id.strip():
+                    found = True
+                    break
+                
+        if not found:
+            print("\nError! sorry book id doest found.")
+            return
+        
+        borrow_date = input("Enter borrow date: ").strip()
+        if not borrow_date:
+            print("\nError! borrow book date should not be empty")
+            return
+        
+        borrow_info = (
+            f"{borrow_id}, {member_id}, {book_id}, {borrow_date}\n"
+        
+        )
+        
+        with open(path, 'a') as file:
+            file.write(borrow_info)
+        print("\n Borrow book successfully.")
+    except PermissionError:
+        print("\nError! you have no permission to add.")
+    except OSError as err:
+        print(f"\nError! File system error. {err}")
+    except Exception as err:
+        print(f"\nError! unexpected error. {err}")
+        
     
             
             
@@ -1223,7 +1231,7 @@ while True:
     elif choice == 13:
         create_borrow_book_file()
     
-    elif choice == 13:
+    elif choice == 14:
         add_borrow_book_member()
         
            
