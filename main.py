@@ -845,69 +845,100 @@ def update_member():
         
 
 def delete_member():
-    file_name = input("Enter member file name: ").strip()
-    #check if file name is empty:
-    if not file_name:
-        print("\n Error! File name should not be empty.")
+    file_member = input("Enter file name: ").strip()
+    if not file_member:
+        print("\n Error! File name should not empty.")
         return
     
-    path = Path(file_name)
-    #Input extension autometically:
-    if path.suffix=="":
-        path = path.with_suffix(".txt")
+    path_member = Path(file_member)
     
-    if not path.exists():
-        print(f"\nError! {path}, Such file has not found.")
+    if path_member.suffix == "":
+        path_member = path_member.with_suffix(".txt")
+    
+    if not path_member.exists():
+        print(f"\nError! {path_member} file doesnot exist.")
         return
     
-    if not path.is_file():
-        print(f"\nError! {path}, Such file is not a file.")
+    if not path_member.is_file():
+        print(f"\nError! {path_member} file is not a file.")
         return
     
-    found=False
-    try:
-        member_id = input("Enter member ID for delete: ").strip()
+    
+    member_id = input("Enter member id: ").strip()
+    if not member_id:
+        print("\nError! Member id should be empty.")
+        return
+    with open(path_member, 'r') as file:
+        members = file.readlines()
+                    
+        member_found = False
+        member_index = None
         
-        
-        #check member id is empty.
-        if not member_id:
-            print("\nError! Member Id should not be empty.")
-            return
-        with open(path, 'r') as file:
-            members = file.readlines()
+        for index, line in enumerate(members):
             
-            for index, line in enumerate(members):
+            
+            if not line.strip():
+                continue
+            
+            member = line.strip().split(',')
+            
+            if len(member)<6:
+                print("\nError! Invalid member record found.")
+                return
+            
+            if member[0].strip()==member_id:
+                member_found = True
+                member_index = index
                 
-                #check empty line:
-                if not line.strip():
-                    continue
-                
-                member = line.strip().split(",")
-                
-                #check validate information 
-                if len(member)<6:
-                    print("\n Error! Enter valid information.")
-                    return
-                
-                if member and member[0].strip() == member_id.strip():
-                    found = True
-                    members.pop(index)
-                    break
-                
-        if found:
-            with open(path, 'w') as file:
-                file.writelines(members)
-            print ("\n Member deleted successfully.")
+                break
+        if not member_found:
+            print("\nError! member id does not exist.")
             return
-        else:
-            print("\n Error! Such member does not found.")
-    except PermissionError:
-        print("\n Error! Your are not allow to delete member.")
-    except OSError as err:
-        print(f"\nError! File System error: {err}")
-    except Exception as err:
-        print(f"\nError! Unexpected error.")
-
+            
+    
+    borrow_file = input("Enter borrow file name: ").strip()
+    if not borrow_file:
+        print("\n Error! borrow file should not be empty.")
+        return
+    
+    borrow_path = Path(borrow_file)
+    
+    if borrow_path.suffix=="":
+        borrow_path = borrow_path.with_suffix(".txt")
+    
+    if not borrow_path.exists():
+        print(f"\nError! {borrow_path} file is not exist.")
+        return
+    
+    if not borrow_path.is_file():
+        print(f"\nError! {borrow_path} file is not a file.")
+        return
+    
+    with open(borrow_path, 'r') as file:
+        for line in file:
+            
+            if not line.strip():
+                continue
+            
+            info = line.strip().split(',')
+            
+            if len(info)<4:
+                print("\nError! Valid information not found.")
+                return
+            
+            if info[1].strip()==member_id:
+                print("\nError! cannot delete member \n This member currently has a borrowed book")
+                return
+    
+    members.pop(member_index)
+    
+    with open (path_member, 'w') as file:
+        file.writelines(members)
+    print(
+        "\nMember deleted successfully."
+    )
+    
+         
 
 
 def create_borrow_book_file():
@@ -969,8 +1000,8 @@ def add_borrow_book_member():
         return
     
     #If file is not a file: 
-    if not path.exists():
-        print(f"\nError! {path} file does not exist.")
+    if not path.is_file():
+        print(f"\nError! {path} file is not a file.")
         return
     
     
@@ -978,6 +1009,8 @@ def add_borrow_book_member():
     #if borrow id is empty:
     if not borrow_id:
         print("\nError! Id should not be empty.")
+        return
+    
     with open(path, 'r') as file:
         
         for line in file:
@@ -988,14 +1021,9 @@ def add_borrow_book_member():
             info = line.strip().split(',')
             #if id is match user no allow to add same id number
             if info[0].strip()==borrow_id.strip():
-                found=True
                 print("\nError! Borrow id already exist.")
                 return
-                    
-    
-    
-    
-    
+
     # ===============|| Member File ||===================
             
     member_file = input("Enter member file name: ").strip()
@@ -1039,13 +1067,7 @@ def add_borrow_book_member():
     if not found:        
         print("\n sorry member id not found.")
         return
-    
-    
-    
-    
-    
-    
-           
+         
     book_file_name = input("Enter book id: ").strip()
     #check book id is empty:
     if not book_file_name:
@@ -1055,7 +1077,7 @@ def add_borrow_book_member():
     path_book = Path(book_file_name)
     
     #add extension autometically
-    if path_book.suffix==".txt":
+    if path_book.suffix=="":
         path_book = path_book.with_suffix(".txt")
         
     if not path_book.exists():
@@ -1204,10 +1226,7 @@ while True:
     elif choice == 13:
         add_borrow_book_member()
         
-        
-            
-        
-        
+           
     else:
         print("Sorry! Such function does not found.")
     
